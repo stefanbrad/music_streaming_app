@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Welcome to Offstream";
+}
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="container py-4">
+        
+        <div class="welcome-banner text-start shadow-lg">
+            <span class="badge bg-primary mb-3">Home</span>
+            <h1 class="display-5 fw-bold text-white mb-2">Welcome back, @User.Identity.Name!</h1>
+            <p class="fs-5 text-muted mb-0">Your personal cloud music space is ready. Stream, upload, and organize your sound.</p>
+        </div>
+
+        <h3 class="mb-4 fw-bold">Quick Actions</h3>
+
+        <div class="row g-4">
+            
+            <div class="col-12 col-md-4">
+                <a asp-controller="Library" asp-action="Index" class="text-decoration-none">
+                    <div class="card glass-card action-card h-100 p-4 border-0">
+                        <div class="card-body p-0">
+                            <div class="action-icon"><i class="bi bi-music-note-beamed"></i></div>
+                            <h4 class="card-title mb-2">My Library</h4>
+                            <p class="text-muted mb-0">Browse your uploaded tracks, stream your audio files, and add them to playlists.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            
+            <div class="col-12 col-md-4">
+                <a asp-controller="Library" asp-action="Upload" class="text-decoration-none">
+                    <div class="card glass-card action-card h-100 p-4 border-0">
+                        <div class="card-body p-0">
+                            <div class="action-icon text-success"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                            <h4 class="card-title mb-2">Upload Music</h4>
+                            <p class="text-muted mb-0">Upload new MP3 audio files. The system automatically optimizes duplicate audio.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <a asp-controller="Playlist" asp-action="Index" class="text-decoration-none">
+                    <div class="card glass-card action-card h-100 p-4 border-0">
+                        <div class="card-body p-0">
+                            <div class="action-icon text-info"><i class="bi bi-music-player"></i></div>
+                            <h4 class="card-title mb-2">Playlists</h4>
+                            <p class="text-muted mb-0">Create new playlists, set them as public/private, and sort your songs easily.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+       
+        <div class="card glass-card mt-5 border-0">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                    <h5 class="fw-bold mb-1"><i class="bi bi-info-circle-fill text-indigo me-2"></i>Organize your tracks</h5>
+                    <p class="text-muted mb-0">Sort playlists, music and enjoy the experience.</p>
+                </div>
+                <a asp-controller="Library" asp-action="Index" class="btn btn-outline-primary rounded-pill btn-sm">Explore Library</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    
+    <div class="container py-5">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-7 text-start">
+                <h1 class="display-3 fw-extrabold text-white lh-sm mb-4">
+                    Your personal music stream, <br/>
+                    <span class="text-indigo" style="background: linear-gradient(135deg, #a5b4fc, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">without limits.</span>
+                </h1>
+                <p class="fs-5 text-muted mb-5" style="max-width: 600px;">
+                    Offstream is a modern client-server audio library. Upload your personal MP3 songs, stream them in real-time, build playlists, and keep your files organized.
+                </p>
+                <div class="d-flex gap-3">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg rounded-pill px-4 shadow">Get Started</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg rounded-pill px-4">Sign In</a>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5 mt-lg-0 text-center">
+                
+                <div class="card glass-card p-5 border-0 d-inline-block shadow-lg position-relative" style="width: 100%; max-width: 400px; transform: rotate(1deg);">
+                    <div class="player-song-art mx-auto mb-4 music-disc-spin" style="width: 120px; height: 120px; border-radius: 50%;">
+                        <i class="bi bi-disc-fill text-white fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-white mb-1">Offstream Cloud</h4>
+                    <p class="text-muted mb-4">Listening made easy</p>
+                    <div class="d-flex justify-content-center gap-3 fs-2 text-muted">
+                        <i class="bi bi-skip-start-circle"></i>
+                        <i class="bi bi-play-circle-fill text-white"></i>
+                        <i class="bi bi-skip-end-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

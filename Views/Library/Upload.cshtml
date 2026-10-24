@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "Upload Song";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card glass-card border-0 p-4 shadow-lg">
+                <div class="mb-4">
+                    <span class="badge bg-secondary mb-1">IMPORT TRACK</span>
+                    <h3 class="fw-bold text-white mb-1">Upload Song</h3>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Add a new track to your streaming library.</p>
+                </div>
+                
+                <div class="card-body p-0">
+                    <form asp-controller="Library" asp-action="Upload" method="post" enctype="multipart/form-data" id="uploadForm">
+                        
+                        <!-- Song title input -->
+                        <div class="mb-3">
+                            <label class="form-label">Song Title <span class="text-indigo">*</span></label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Bohemian Rhapsody" required />
+                        </div>
+
+                        <!-- Artist name input -->
+                        <div class="mb-3">
+                            <label class="form-label">Artist</label>
+                            <input type="text" name="artist" class="form-control" placeholder="e.g. Queen" />
+                        </div>
+
+                        <!-- Drag and drop zone for MP3 -->
+                        <div class="mb-4">
+                            <label class="form-label">Audio File (.mp3) <span class="text-indigo">*</span></label>
+                            
+                            <div class="upload-dropzone" id="dropzone">
+                                <input type="file" name="file" id="fileInput" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" accept=".mp3" required />
+                                <div class="upload-dropzone-icon" id="dropzoneIcon">
+                                    <i class="bi bi-music-note-beamed"></i>
+                                </div>
+                                <h5 class="text-white mb-1" id="dropzoneText">Drag and drop file here</h5>
+                                <p class="text-muted mb-0 small">or click to browse local files (MP3 only)</p>
+                            </div>
+                            
+                            <div class="form-text text-muted mt-2" style="font-size: 0.8rem;">
+                                Note: Identical files are automatically deduplicated by the system.
+                            </div>
+                        </div>
+
+                        <!-- Buttons actions -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Track
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const dropzoneText = document.getElementById('dropzoneText');
+            const dropzoneIcon = document.getElementById('dropzoneIcon');
+            if (!dropzone || !fileInput) return;
+
+            // Visual effects for Drag & Drop
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileInput.addEventListener(eventName, (e) => {
+                    dropzone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileInput.addEventListener(eventName, (e) => {
+                    dropzone.classList.remove('dragover');
+                }, false);
+            });
+
+            // Update text when file is selected
+            fileInput.addEventListener('change', (e) => {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    const fileName = fileInput.files[0].name;
+                    dropzoneText.innerText = fileName;
+                    dropzoneIcon.innerHTML = '<i class="bi bi-file-music-fill text-success"></i>';
+                } else {
+                    dropzoneText.innerText = 'Drag and drop file here';
+                    dropzoneIcon.innerHTML = '<i class="bi bi-music-note-beamed"></i>';
+                }
+            });
+        })();
+    </script>
+}

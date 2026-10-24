@@ -1,0 +1,142 @@
+@model IEnumerable<Offstream.web.Models.Song>
+@{
+    ViewData["Title"] = "My Library";
+    var sortBy = ViewBag.SortBy as string ?? "recent";
+}
+
+<div class="container py-4">
+    <!-- Header Area -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
+        <div>
+            <span class="badge bg-secondary mb-1">REAL-TIME LIBRARY</span>
+            <h2 class="fw-bold text-white mb-0">My Library</h2>
+        </div>
+        <a asp-controller="Library" asp-action="Upload" class="btn btn-primary rounded-pill">
+            <i class="bi bi-cloud-arrow-up-fill me-2"></i> Upload Song
+        </a>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="card glass-card border-0 mb-4">
+        <div class="card-body p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <!-- Client-side search input -->
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search song title or artist...">
+            </div>
+
+            <!-- Sorting Buttons -->
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted text-nowrap me-2" style="font-size: 0.9rem;">Sort by:</span>
+                <a href="/Library?sortBy=recent" class="btn btn-sm rounded-pill px-3 @(sortBy == "recent" ? "btn-primary" : "btn-secondary")">
+                    Recently Added
+                </a>
+                <a href="/Library?sortBy=alpha" class="btn btn-sm rounded-pill px-3 @(sortBy == "alpha" ? "btn-primary" : "btn-secondary")">
+                    Alphabetical
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Songs List Container -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card glass-card border-0 p-5 text-center">
+            <div class="card-body">
+                <i class="bi bi-music-note-beamed text-muted fs-1 mb-3 d-block"></i>
+                <h5 class="text-white mb-2">Your library is empty</h5>
+                <p class="text-muted mb-4">Upload some MP3 tracks to build your personal streaming library.</p>
+                <a asp-controller="Library" asp-action="Upload" class="btn btn-outline-primary rounded-pill">
+                    Upload Your First Track
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        var index = 1;
+        <div class="song-list-container">
+            @foreach (var song in Model)
+            {
+                <div class="song-item glass-card border-0" data-song-id="@song.Id">
+                    <!-- Index -->
+                    <div class="song-index">@index</div>
+                    
+                    <!-- Cover placeholder -->
+                    <div class="song-cover-placeholder">
+                        <i class="bi bi-music-note-beamed text-indigo"></i>
+                    </div>
+
+                    <!-- Song Metadata -->
+                    <div class="song-info">
+                        <div class="song-title">@song.Title</div>
+                        <div class="song-artist">@song.Artist</div>
+                    </div>
+
+                    <!-- Action items -->
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Play state Indicator and Play Button -->
+                        <button class="btn btn-outline-primary rounded-pill play-state-indicator p-0 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" onclick="window.AudioPlayer.play(@song.Id)" title="Play track">
+                            <i class="bi bi-play-fill text-white fs-5"></i>
+                        </button>
+                        
+                        <!-- Add to playlist dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm rounded-pill p-0 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Add to playlist">
+                                <i class="bi bi-plus-lg text-white"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li class="dropdown-header text-muted">Add to playlist:</li>
+                                @if (ViewBag.MyPlaylists != null && ((IEnumerable<Offstream.web.Models.Playlist>)ViewBag.MyPlaylists).Any())
+                                {
+                                    foreach (var playlist in ViewBag.MyPlaylists)
+                                    {
+                                        <li>
+                                            <form asp-controller="Playlist" asp-action="AddSong" method="post">
+                                                <input type="hidden" name="playlistId" value="@playlist.Id" />
+                                                <input type="hidden" name="songId" value="@song.Id" />
+                                                <input type="hidden" name="returnUrl" value="/Library?sortBy=@sortBy" />
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-music-note-list me-2"></i> @playlist.Name
+                                                </button>
+                                            </form>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><span class="dropdown-item text-muted">No playlists found</span></li>
+                                }
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li>
+                                    <a class="dropdown-item fw-bold text-indigo" asp-controller="Playlist" asp-action="Index">
+                                        <i class="bi bi-plus-circle-fill me-2"></i> Create playlist
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                index++;
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            // Register tracks to the global player queue
+            const tracks = [
+                @if (Model != null)
+                {
+                    foreach (var song in Model)
+                    {
+                        @:{ id: @song.Id, title: "@Html.Raw(song.Title?.Replace("\"", "\\\"") ?? "")", artist: "@Html.Raw((song.Artist ?? "Unknown").Replace("\"", "\\\""))", url: "/Audio/Stream/@song.Id" },
+                    }
+                }
+            ];
+            window.AudioPlayer.setQueue(tracks);
+        })();
+    </script>
+}

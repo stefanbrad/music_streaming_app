@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card glass-form-card border-0">
+            <div class="text-center mb-4">
+                <div class="player-song-art mx-auto mb-3 music-disc-spin" style="width: 56px; height: 56px; border-radius: 50%;">
+                    <i class="bi bi-person-plus text-white fs-4"></i>
+                </div>
+                <h3 class="fw-bold text-white mb-1">Create Account</h3>
+                <p class="text-muted small">Sign up to upload and stream your custom music library.</p>
+            </div>
+
+            <form asp-controller="Account" asp-action="Register" method="post">
+                <!-- Errors Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 text-center py-2 mb-3" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border-radius: 12px; font-size: 0.9rem;"></div>
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label class="form-label">Choose Username</label>
+                    <div class="position-relative">
+                        <input type="text" name="username" class="form-control" placeholder="Select username" required style="padding-left: 2.5rem;" />
+                        <i class="bi bi-person position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%);"></i>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="position-relative">
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required style="padding-left: 2.5rem;" />
+                        <i class="bi bi-lock position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%);"></i>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-person-plus-fill me-1"></i> Register Account
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <span class="text-muted small">Already have an account?</span>
+                <a asp-action="Login" class="text-indigo text-decoration-none fw-semibold small ms-1">Log in here</a>
+            </div>
+        </div>
+    </div>
+</div>
